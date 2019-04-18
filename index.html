@@ -15,31 +15,44 @@
       crossorigin
       src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
     ></script>
+
+    <!-- BABEL STANDALONE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
     <title>My First React App</title>
   </head>
   <body>
-    <div id="app">Yo!</div>
+    <div id="app"></div>
 
     <!--
-      createElement() takes element to create, attributes to attach to element, children of that element
+      What if we could leverage HTML inside of our JS to compose our elements and components instead of making a bunch of calls to React.createElement? This is where JSX comes in!
     -->
-    <!-- render() takes the element to render, where to place it -->
-    <script>
+    <!--
+      Without Babel, the browser won't be able to interpret our HTML inside of our JS code. Babel transforms our normal JS into JSX. Don't forget the 'text/babel' type setting!
+    -->
+
+    <script type="text/babel">
       const name = "Charlie";
       const handle = "@charliesoandso";
 
-      const nameElement = React.createElement("h1", null, name);
+      function NameComponent(props) {
+        return <h1>{props.name}</h1>;
+      }
 
-      const handleElement = React.createElement("h3", null, handle);
+      function HandleComponent(props) {
+        return <h3>{props.handle}</h3>;
+      }
 
-      const wrapperElement = React.createElement(
-        "div",
-        { id: "container" },
-        nameElement,
-        handleElement
-      );
+      // we pass in props directly on the component
+      function App() {
+        return (
+          <div id="container">
+            <NameComponent name={name} />
+            <HandleComponent handle={handle} />
+          </div>
+        );
+      }
 
-      ReactDOM.render(wrapperElement, document.getElementById("app"));
+      ReactDOM.render(<App />, document.getElementById("app"));
     </script>
   </body>
 </html>

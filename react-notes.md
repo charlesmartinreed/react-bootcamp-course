@@ -30,3 +30,7 @@
 # ...it's just JavaScript!
 
 - If you're comfortable with JS, you can get up to speed with React reasonably quickly. The syntax is respectful of what vanilla JS can do.
+
+# Element vs Component
+
+- Component is a function or class that optionally accepts input and RETURNS a React Element
