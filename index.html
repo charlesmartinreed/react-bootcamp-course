@@ -66,13 +66,22 @@
 
           // bind allows you to specify what the 'this' keyword is referencing - in this constructor we're saying that the 'this' used by handleRemoveFriend is BOUND to the this we specify, which in 'App'. Because this class extends Component, App has a .setState method. This resolves our 'this.setState is not a function' error.
           this.handleRemoveFriend = this.handleRemoveFriend.bind(this);
+          this.handleAddFriend = this.handleAddFriend.bind(this);
           this.updateInput = this.updateInput.bind(this);
         }
 
         // helper methods for updating state
         // alternatively, you can use an arrow function to avoid the bind
         // handleAddFriend = () => {}
-        handleAddFriend() {}
+        // why .concat instead of .push? Never modify the state directly, .push would modify the friends array, but .concat would return a new array with the specified changes
+        handleAddFriend() {
+          this.setState(currentState => {
+            return {
+              friends: currentState.friends.concat([this.state.input]),
+              input: ""
+            };
+          });
+        }
 
         // object returned from our function is merged with the filtered state
 
@@ -104,7 +113,7 @@
                 value={this.state.input}
                 onChange={this.updateInput}
               />
-              <button>Add Friend</button>
+              <button onClick={this.handleAddFriend}>Add Friend</button>
               <FriendsList
                 list={this.state.friends}
                 onRemoveFriend={this.handleRemoveFriend}
