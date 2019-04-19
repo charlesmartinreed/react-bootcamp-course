@@ -32,23 +32,24 @@
     -->
 
     <script type="text/babel">
-      const name = "Charlie";
-      const handle = "@charliesoandso";
-
-      function NameComponent(props) {
-        return <h1>{props.name}</h1>;
-      }
-
-      function HandleComponent(props) {
-        return <h3>{props.handle}</h3>;
-      }
-
-      // we pass in props directly on the component
-      function App() {
+      // for each name in the friends array, create a list item
+      // for demo purposes, we pass name as the key. React needs this key to figure out what changed in a list, when using .map or looping over iterables.
+      function FriendsList(props) {
         return (
-          <div id="container">
-            <NameComponent name={name} />
-            <HandleComponent handle={handle} />
+          <ul>
+            {props.list.map(name => (
+              <li key={name}>{name}</li>
+            ))}
+          </ul>
+        );
+      }
+
+      function App() {
+        const friends = ["Brian", "Brandice", "Marvin"];
+
+        return (
+          <div>
+            <FriendsList list={friends} />
           </div>
         );
       }
