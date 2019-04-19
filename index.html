@@ -32,40 +32,58 @@
     -->
 
     <script type="text/babel">
-      // for each name in the friends array, create a list item
-      // for demo purposes, we pass name as the key. React needs this key to figure out what changed in a list, when using .map or looping over iterables.
-      function FriendsList(props) {
-        return (
-          <ul>
-            {props.list.map(name => (
-              <li key={name}>{name}</li>
-            ))}
-          </ul>
-        );
-      }
+            // for each name in the friends array, create a list item
+            // for demo purposes, we pass name as the key. React needs this key to figure out what changed in a list, when using .map or looping over iterables.
+            function FriendsList(props) {
+              return (
+                <ul>
+                  {props.list.map(name => (
+                    <li key={name}>{name}</li>
+                  ))}
+                </ul>
+              );
+            }
 
-      // simply an ES6 class, not unique to React
-      class App extends React.Component {
-        // constructor is JS func not React specific
-        // call to super because we're extending a parent class; inheritance
-        // state now lives on the component
-        constructor(props) {
-          super(props);
+         // helper methods for updating state
+         handleAddFriend() {
 
-          this.state = {
-            friends: ["Brian", "Brandice", "Marvin"]
-          };
-        }
-        render() {
-          return (
-            <div>
-              <FriendsList list={this.state.friends} />
-            </div>
-          );
-        }
-      }
+         }
 
-      ReactDOM.render(<App />, document.getElementById("app"));
+         // object returned from our function is merged with the filtered state
+
+      // 'currentState' is a predefined argument that React uses to capture, you guessed it, the current state of your component.
+
+         // notice that we're only altering the state members that we're actually changing - React intelligently surmises that the UI likely needs to be updated accordingly when using this.setState. Were you to simply set this.state.friends to the filtered array, this update would not occur because React is not actively watching for state changes.
+         handleRemoveFriend(name) {
+         	this.setState((currentState) => {
+         		return {
+         			friends: currentState.friends.filter((friend) => friend !== name)
+         		}
+         	})
+         }
+
+            // simply an ES6 class, not unique to React
+            class App extends React.Component {
+              // constructor is JS func not React specific
+              // call to super because we're extending a parent class; inheritance
+              // state now lives on the component
+              constructor(props) {
+                super(props);
+
+                this.state = {
+                  friends: ["Brian", "Brandice", "Marvin"]
+                };
+              }
+              render() {
+                return (
+                  <div>
+                    <FriendsList list={this.state.friends} />
+                  </div>
+                );
+              }
+            }
+
+            ReactDOM.render(<App />, document.getElementById("app"));
     </script>
   </body>
 </html>

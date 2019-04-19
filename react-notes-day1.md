@@ -34,3 +34,8 @@
 # Element vs Component
 
 - Component is a function or class that optionally accepts input and RETURNS a React Element
+
+# React vs ReactDOM
+
+- DOM is specifically for rendering for the DOM, i.e, browsers
+- React itself can be utilized in a lot of different places and devices, with or without a UI
