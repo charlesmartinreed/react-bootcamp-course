@@ -44,14 +44,25 @@
         );
       }
 
-      function App() {
-        const friends = ["Brian", "Brandice", "Marvin"];
+      // simply an ES6 class, not unique to React
+      class App extends React.Component {
+        // constructor is JS func not React specific
+        // call to super because we're extending a parent class; inheritance
+        // state now lives on the component
+        constructor(props) {
+          super(props);
 
-        return (
-          <div>
-            <FriendsList list={friends} />
-          </div>
-        );
+          this.state = {
+            friends: ["Brian", "Brandice", "Marvin"]
+          };
+        }
+        render() {
+          return (
+            <div>
+              <FriendsList list={this.state.friends} />
+            </div>
+          );
+        }
       }
 
       ReactDOM.render(<App />, document.getElementById("app"));
