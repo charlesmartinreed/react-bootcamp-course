@@ -51,7 +51,7 @@
                 active: false
               }
             ];
-            setTimeout(() => res(friends), 2000);
+            setTimeout(() => res(friends), 5000);
           });
         }
       };
@@ -75,21 +75,24 @@
           super(props);
 
           this.state = {
-            text: "Loading"
+            text: "",
+            count: 0
           };
         }
 
         // remember that setInterval returns an interval ID
         componentDidMount() {
-          const stopper = `${this.state.text}...`;
+          const stopper = "Loading...";
+          const phrase = "Loading...".split("");
 
           this.interval = window.setInterval(() => {
-            console.log("running");
+            // let letter = phrase[this.count];
             this.state.text === stopper
-              ? this.setState({ text: "Loading" })
+              ? this.setState({ text: "", count: 0 })
               : this.setState(currentState => {
                   return {
-                    text: currentState.text + "."
+                    text: currentState.text + phrase[currentState.count],
+                    count: (currentState.count += 1)
                   };
                 });
           }, 300);
