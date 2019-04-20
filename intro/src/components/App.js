@@ -4,6 +4,8 @@ import About from "./About";
 import Topics from "./Topics";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 
+// BrowserRouter is only needed once at the root level. It passes props to children components using Context.
+
 class App extends Component {
   render() {
     return (
