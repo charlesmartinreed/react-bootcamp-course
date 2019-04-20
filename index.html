@@ -24,6 +24,39 @@
   <body>
     <div id="app"></div>
 
+    <!-- fake API and async request -->
+    <script>
+      window.API = {
+        fetchFriends() {
+          return new Promise((res, rej) => {
+            const friends = [
+              {
+                name: "Brandice",
+                active: true
+              },
+              {
+                name: "Marvin",
+                active: true
+              },
+              {
+                name: "Jonathan",
+                active: false
+              },
+              {
+                name: "Edna",
+                active: true
+              },
+              {
+                name: "Timothy",
+                active: false
+              }
+            ];
+            setTimeout(() => res(friends), 2000);
+          });
+        }
+      };
+    </script>
+
     <!--
       What if we could leverage HTML inside of our JS to compose our elements and components instead of making a bunch of calls to React.createElement? This is where JSX comes in!
     -->
@@ -85,28 +118,7 @@
           super(props);
 
           this.state = {
-            friends: [
-              {
-                name: "Brandice",
-                active: true
-              },
-              {
-                name: "Marvin",
-                active: true
-              },
-              {
-                name: "Jonathan",
-                active: false
-              },
-              {
-                name: "Edna",
-                active: true
-              },
-              {
-                name: "Timothy",
-                active: false
-              }
-            ],
+            friends: [],
             input: ""
           };
 
@@ -114,6 +126,25 @@
           this.handleRemoveFriend = this.handleRemoveFriend.bind(this);
           this.handleAddFriend = this.handleAddFriend.bind(this);
           this.updateInput = this.updateInput.bind(this);
+
+          console.log("---constructor---");
+        }
+
+        componentDidMount() {
+          console.log("---componentDidMount---");
+          API.fetchFriends().then(friends =>
+            this.setState({
+              friends
+            })
+          );
+        }
+
+        componentDidUpdate() {
+          console.log("---componentDidUpdate---");
+        }
+
+        componentWillUnmount() {
+          console.log("---componentWillUnmount---");
         }
 
         // helper methods for updating state
@@ -125,7 +156,7 @@
             this.setState(currentState => {
               return {
                 friends: currentState.friends.concat([
-                  { name: this.state.input, active: true }
+                  { name: currentState.input, active: true }
                 ]),
                 input: ""
               };
@@ -176,6 +207,7 @@
         }
 
         render() {
+          console.log("---render---");
           return (
             <div>
               <input

@@ -82,7 +82,6 @@
 // 			// bind allows you to specify what the 'this' keyword is referencing - in this constructor we're saying that the 'this' used by handleRemoveFriend is BOUND to the this we specify, which in 'App'. Because this class extends Component, App has a .setState method. This resolves our 'this.setState is not a function' error.
 // 			this.handleRemoveFriend = this.handleRemoveFriend.bind(this);
 // 			this.handleAddFriend = this.handleAddFriend.bind(this);
-// 			// this.handleClearFriends = this.handleClearFriends.bind(this);
 // 			this.updateInput = this.updateInput.bind(this);
 // 		}
 //
@@ -95,7 +94,7 @@
 // 				this.setState(currentState => {
 // 					return {
 // 						friends: currentState.friends.concat([
-// 							{ name: this.state.input, active: true }
+// 							{ name: currentState.input, active: true }
 // 						]),
 // 						input: ""
 // 					};
@@ -117,14 +116,6 @@
 // 				};
 // 			});
 // 		}
-//
-// 		handleClearFriends = () => {
-// 			this.setState(currentState => {
-// 				return {
-// 					friends: []
-// 				};
-// 			});
-// 		};
 //
 // 		handleStatusChange = name => {
 // 			this.setState(currentState => {
@@ -163,7 +154,15 @@
 // 						onChange={this.updateInput}
 // 					/>
 // 					<button onClick={this.handleAddFriend}>Add Friend</button>
-// 					<button onClick={this.handleClearFriends}>Clear All</button>
+// 					<button
+// 						onClick={() =>
+// 							this.setState({
+// 								friends: []
+// 							})
+// 						}
+// 					>
+// 						Clear All
+// 					</button>
 // 					<ActiveFriends
 // 						list={this.state.friends.filter(friend => friend.active)}
 // 						onRemoveFriend={this.handleRemoveFriend}
