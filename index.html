@@ -36,18 +36,43 @@
       // for demo purposes, we pass name as the key. React needs this key to figure out what changed in a list, when using .map or looping over iterables.
 
       // onRemoveFriend is passed in as a prop, when button is clicked when invoke an arrow function which is in turn responsible for invoking the onRemoveFriend. The arrow function prevents onRemoveFriend from being invoked when the component loads because we pass on a function definition rather than a function.
-      function FriendsList(props) {
+
+      function ActiveFriends(props) {
         return (
-          <ul>
-            {props.list.map(name => (
-              <li key={name}>
-                <span>{name}</span>
-                <button onClick={() => props.onRemoveFriend(name)}>
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <h1>Active Friends</h1>
+            <ul>
+              {props.list.map(friend => (
+                <li key={friend.name}>
+                  <span>{friend.name}</span>
+                  <button onClick={() => props.onRemoveFriend(friend.name)}>
+                    Remove
+                  </button>
+                  <button onClick={() => props.onStatusChange(friend.name)}>
+                    Deactivate
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      function InactiveFriends(props) {
+        return (
+          <div>
+            <h1>Inactive Friends</h1>
+            <ul>
+              {props.list.map(friend => (
+                <li key={friend.name}>
+                  <span>{friend.name}</span>
+                  <button onClick={() => props.onStatusChange(friend.name)}>
+                    Activate
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         );
       }
 
@@ -60,13 +85,35 @@
           super(props);
 
           this.state = {
-            friends: ["Brian", "Brandice", "Marvin"],
+            friends: [
+              {
+                name: "Brandice",
+                active: true
+              },
+              {
+                name: "Marvin",
+                active: true
+              },
+              {
+                name: "Jonathan",
+                active: false
+              },
+              {
+                name: "Edna",
+                active: true
+              },
+              {
+                name: "Timothy",
+                active: false
+              }
+            ],
             input: ""
           };
 
           // bind allows you to specify what the 'this' keyword is referencing - in this constructor we're saying that the 'this' used by handleRemoveFriend is BOUND to the this we specify, which in 'App'. Because this class extends Component, App has a .setState method. This resolves our 'this.setState is not a function' error.
           this.handleRemoveFriend = this.handleRemoveFriend.bind(this);
           this.handleAddFriend = this.handleAddFriend.bind(this);
+          // this.handleClearFriends = this.handleClearFriends.bind(this);
           this.updateInput = this.updateInput.bind(this);
         }
 
@@ -75,12 +122,16 @@
         // handleAddFriend = () => {}
         // why .concat instead of .push? Never modify the state directly, .push would modify the friends array, but .concat would return a new array with the specified changes
         handleAddFriend() {
-          this.setState(currentState => {
-            return {
-              friends: currentState.friends.concat([this.state.input]),
-              input: ""
-            };
-          });
+          if (this.state.input !== "") {
+            this.setState(currentState => {
+              return {
+                friends: currentState.friends.concat([
+                  { name: this.state.input, active: true }
+                ]),
+                input: ""
+              };
+            });
+          }
         }
 
         // object returned from our function is merged with the filtered state
@@ -91,10 +142,39 @@
         handleRemoveFriend(name) {
           this.setState(currentState => {
             return {
-              friends: currentState.friends.filter(friend => friend !== name)
+              friends: currentState.friends.filter(
+                friend => friend.name !== name
+              )
             };
           });
         }
+
+        handleClearFriends = () => {
+          this.setState(currentState => {
+            return {
+              friends: []
+            };
+          });
+        };
+
+        handleStatusChange = name => {
+          this.setState(currentState => {
+            const friend = currentState.friends.find(
+              friend => friend.name === name
+            );
+
+            return {
+              friends: currentState.friends
+                .filter(friend => friend.name !== name)
+                .concat([
+                  {
+                    name,
+                    active: !friend.active
+                  }
+                ])
+            };
+          });
+        };
 
         // if updating state based on the previous state, use the functional setState, i.e., () => ({}) because React will automatically pass the currentState as a param
         updateInput(e) {
@@ -114,9 +194,16 @@
                 onChange={this.updateInput}
               />
               <button onClick={this.handleAddFriend}>Add Friend</button>
-              <FriendsList
-                list={this.state.friends}
+              <button onClick={this.handleClearFriends}>Clear All</button>
+              <ActiveFriends
+                list={this.state.friends.filter(friend => friend.active)}
                 onRemoveFriend={this.handleRemoveFriend}
+                onStatusChange={this.handleStatusChange}
+              />
+              <InactiveFriends
+                list={this.state.friends.filter(friend => !friend.active)}
+                onRemoveFriend={this.handleRemoveFriend}
+                onStatusChange={this.handleStatusChange}
               />
             </div>
           );
