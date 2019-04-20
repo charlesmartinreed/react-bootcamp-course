@@ -31,3 +31,4 @@ ReactDOM.render(routes, document.getElementById('app'))
 - This was intended to be a ROUTER DESIGNED FOR REACT
 - The routing is dynamic, which means it TAKES PLACES AS YOUR APP IS RENDERING
 - The ENTIRE APP IS COMPONENTS; instead of rendering a component directly, you render a ROUTE which is itself responsible for rendering a specific COMPONENT
+- The component is rendered when the path specified to the router is reached
