@@ -70,6 +70,40 @@
 
       // onRemoveFriend is passed in as a prop, when button is clicked when invoke an arrow function which is in turn responsible for invoking the onRemoveFriend. The arrow function prevents onRemoveFriend from being invoked when the component loads because we pass on a function definition rather than a function.
 
+      class Loading extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            text: "Loading"
+          };
+        }
+
+        // remember that setInterval returns an interval ID
+        componentDidMount() {
+          const stopper = `${this.state.text}...`;
+
+          this.interval = window.setInterval(() => {
+            console.log("running");
+            this.state.text === stopper
+              ? this.setState({ text: "Loading" })
+              : this.setState(currentState => {
+                  return {
+                    text: currentState.text + "."
+                  };
+                });
+          }, 300);
+        }
+
+        componentWillUnmount() {
+          window.clearInterval(this.interval);
+        }
+
+        render() {
+          return <p>{this.state.text}</p>;
+        }
+      }
+
       function ActiveFriends(props) {
         return (
           <div>
@@ -119,7 +153,8 @@
 
           this.state = {
             friends: [],
-            input: ""
+            input: "",
+            loading: true
           };
 
           // bind allows you to specify what the 'this' keyword is referencing - in this constructor we're saying that the 'this' used by handleRemoveFriend is BOUND to the this we specify, which in 'App'. Because this class extends Component, App has a .setState method. This resolves our 'this.setState is not a function' error.
@@ -134,7 +169,8 @@
           console.log("---componentDidMount---");
           API.fetchFriends().then(friends =>
             this.setState({
-              friends
+              friends,
+              loading: false
             })
           );
         }
@@ -208,6 +244,11 @@
 
         render() {
           console.log("---render---");
+
+          if (this.state.loading) {
+            return <Loading />;
+          }
+
           return (
             <div>
               <input
