@@ -9,14 +9,25 @@
 # What kinds of Lifecycle methods does React have?
 
 - Constructor - establish init state of the app
+
 - Render - takes the returned elements and updates the DOM
+
 - componentWillMount - is being deprecated, use componentDidMount instead
+
 - componentDidMount - called after the component is rendered to the DOM. This is a good place to handle ajax requests.
-- componentDidUpdate - called when your component receives new props or state changes
+
+- componentDidUpdate - called when your component receives new props or component state changes
+
 - componentWillUnmount - called when the component is going to be removed from the DOM; ex: removing listeners (firebase, socket.io) added during componentDidMount
+
 - getDerivedStateFromProps - get props from parent component, set state on the local component using those props
+
 - shouldComponentUpdate() - can be used to determine whether or not a component should re-render during a render cycle
 
 # Do you need to bind lifecycle methods?
 
 - No, React handles this for you automatically.
+
+# When is a component unmounted?
+
+- When react is no longer showing it in the view

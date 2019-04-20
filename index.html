@@ -86,7 +86,6 @@
           const phrase = "Loading...".split("");
 
           this.interval = window.setInterval(() => {
-            // let letter = phrase[this.count];
             this.state.text === stopper
               ? this.setState({ text: "", count: 0 })
               : this.setState(currentState => {

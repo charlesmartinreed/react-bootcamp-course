@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popular Repos</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.API = {
+        fetchPopularRepos(language) {
+          // "language" can be "javascript", "ruby", "python", or "all"
+          const encodedURI = encodeURI(
+            `https://api.github.com/search/repositories?q=stars:>1+language:${language}&sort=stars&order=desc&type=Repositories`
+          );
+          return fetch(encodedURI)
+            .then(data => data.json())
+            .then(repos => repos.items)
+            .catch(error => {
+              console.warn(error);
+              return null;
+            });
+        }
+      };
+    </script>
+
+    <script type="text/babel">
+      class Loading extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            text: "Loading"
+          };
+        }
+        componentDidMount() {
+          const stopper = this.state.text + "...";
+          this.interval = window.setInterval(() => {
+            this.state.text === stopper
+              ? this.setState(() => ({ text: "Loading" }))
+              : this.setState(prevState => ({ text: prevState.text + "." }));
+          }, 300);
+        }
+        componentWillUnmount() {
+          window.clearInterval(this.interval);
+        }
+        render() {
+          return <p>{this.state.text}</p>;
+        }
+      }
+
+      function LanguageListComponent(props) {
+        return (
+          <div>
+            <ul>
+              {props.list.map(language => (
+                <li key={language}>
+                  <span onClick={() => props.onHandleClick(language)}>
+                    {language}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      function LanguageInfoComponent(props) {
+        return (
+          <div style={infoStyle}>
+            {props.items.map(item => (
+              <ul>
+                <li key={item.id}>@{item.name}</li>
+                <li>
+                  <a href={item.html_url}>{item.name}</a>
+                </li>
+                <li>{item.stargazers_count} stars</li>
+              </ul>
+            ))}
+          </div>
+        );
+      }
+
+      class App extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            currentLanguage: "",
+            languages: ["all", "JavaScript", "Ruby", "Python"],
+            items: [],
+            loading: false
+          };
+        }
+
+        componentDidMount() {
+          // API.fetchPopularRepos("all").then(data => console.log(data));
+          // API.fetchPopularRepos("all").then(data =>
+          //   this.setState({
+          //     items: data,
+          //     loading: false
+          //   })
+          // );
+        }
+
+        handleClick = language => {
+          this.setState({ loading: true });
+
+          API.fetchPopularRepos(language).then(data =>
+            this.setState({
+              currentLanguage: language,
+              items: data,
+              loading: false
+            })
+          );
+        };
+
+        render() {
+          if (this.state.loading) {
+            return <Loading />;
+          }
+          return (
+            <div>
+              <LanguageListComponent
+                list={this.state.languages}
+                onHandleClick={this.handleClick}
+              />
+              <h1 style={{ textAlign: "center" }}>
+                {this.state.currentLanguage}
+              </h1>
+              <LanguageInfoComponent items={this.state.items} />
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<App />, document.getElementById("app"));
+
+      const infoStyle = {
+        display: "flex",
+        flexWrap: "wrap",
+        margin: 30
+      };
+    </script>
+  </body>
+</html>
