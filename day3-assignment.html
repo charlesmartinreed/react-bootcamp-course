@@ -56,35 +56,37 @@
         }
       }
 
-      function LanguageListComponent(props) {
+      function Nav(props) {
+        const languages = ["all", "javascript", "ruby", "python"];
+
         return (
-          <div>
+          <nav>
             <ul>
-              {props.list.map(language => (
-                <li key={language}>
-                  <span onClick={() => props.onHandleClick(language)}>
-                    {language}
-                  </span>
+              {languages.map(lang => (
+                <li key={lang} onClick={() => props.onSelectLanguage(lang)}>
+                  {lang}
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         );
       }
 
-      function LanguageInfoComponent(props) {
+      function RepoGrid(props) {
         return (
-          <div style={infoStyle}>
-            {props.items.map(item => (
-              <ul>
-                <li key={item.id}>@{item.name}</li>
-                <li>
-                  <a href={item.html_url}>{item.name}</a>
-                </li>
-                <li>{item.stargazers_count} stars</li>
-              </ul>
+          <ul style={{ display: "flex", flexWrap: "wrap" }}>
+            {props.repos.map(({ name, owner, stargazers_count, html_url }) => (
+              <li key={name} style={{ margin: 30 }}>
+                <ul>
+                  <li>
+                    <a href={html_url}>{name}</a>
+                  </li>
+                  <li>@{owner.login}</li>
+                  <li>{stargazers_count}</li>
+                </ul>
+              </li>
             ))}
-          </div>
+          </ul>
         );
       }
 
@@ -93,49 +95,62 @@
           super(props);
 
           this.state = {
-            currentLanguage: "",
-            languages: ["all", "JavaScript", "Ruby", "Python"],
-            items: [],
-            loading: false
+            repos: [],
+            activeLanguage: "all",
+            loading: true
           };
+
+          this.handleSelectLanguage = this.handleSelectLanguage.bind(this);
+          this.fetchRepos = this.fetchRepos.bind(this);
         }
 
+        // when component mounts, the active language is 'all'
         componentDidMount() {
-          // API.fetchPopularRepos("all").then(data => console.log(data));
-          // API.fetchPopularRepos("all").then(data =>
-          //   this.setState({
-          //     items: data,
-          //     loading: false
-          //   })
-          // );
+          this.fetchRepos(this.state.activeLanguage);
         }
 
-        handleClick = language => {
-          this.setState({ loading: true });
+        // only fetch new data when active language on state  changes
+        componentDidUpdate(prevProps, prevState) {
+          if (prevState.activeLanguage !== this.state.activeLanguage) {
+            this.fetchRepos(this.state.activeLanguage);
+          }
+        }
 
-          API.fetchPopularRepos(language).then(data =>
+        // fetch language, update state of the local repos array
+        fetchRepos(lang) {
+          this.setState({
+            loading: true
+          });
+
+          window.API.fetchPopularRepos(lang).then(repos => {
             this.setState({
-              currentLanguage: language,
-              items: data,
-              loading: false
-            })
-          );
-        };
+              loading: false,
+              repos
+            });
+          });
+        }
+
+        // update the selected language in the DOM
+        handleSelectLanguage(lang) {
+          this.setState({
+            activeLanguage: lang
+          });
+        }
 
         render() {
           if (this.state.loading) {
             return <Loading />;
           }
+
           return (
             <div>
-              <LanguageListComponent
-                list={this.state.languages}
-                onHandleClick={this.handleClick}
-              />
-              <h1 style={{ textAlign: "center" }}>
-                {this.state.currentLanguage}
-              </h1>
-              <LanguageInfoComponent items={this.state.items} />
+              <Nav onSelectLanguage={this.handleSelectLanguage} />
+              <div>
+                <h1 style={{ textAlign: "center" }}>
+                  {this.state.activeLanguage}
+                </h1>
+                <RepoGrid repos={this.state.repos} />
+              </div>
             </div>
           );
         }
