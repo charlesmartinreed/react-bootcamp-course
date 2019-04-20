@@ -32,3 +32,17 @@ ReactDOM.render(routes, document.getElementById('app'))
 - The routing is dynamic, which means it TAKES PLACES AS YOUR APP IS RENDERING
 - The ENTIRE APP IS COMPONENTS; instead of rendering a component directly, you render a ROUTE which is itself responsible for rendering a specific COMPONENT
 - The component is rendered when the path specified to the router is reached
+
+# Passing props to React Router
+
+- With render, because you're creating the element, you could pass the prop in there.
+  ex:
+  <Route path={`${props.match.path}/:topicId`} render={() => {
+  return <Topic name='tyler' />
+  }} />
+
+# How do I pass props to a component that isn't being rendered by React Router?
+
+- import withRouter from 'react-router-dom'
+- export withRouter, passing in the component that isn't being rendered that you want to pass props into  
+  ex: export default withRouter(<component>)

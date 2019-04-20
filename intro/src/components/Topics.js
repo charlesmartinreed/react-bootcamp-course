@@ -9,6 +9,7 @@ function Topic(props) {
   return <h3>{props.match.params.topicId}</h3>;
 }
 
+// when we're at the EXACT path, i.e, /topics, render a h3 asking the user to select a topic
 export default function Topics(props) {
   // console.log("Props to Topics", props);
   console.log("match.url", props.match.url);
@@ -30,6 +31,13 @@ export default function Topics(props) {
       <hr />
 
       <Route path={`${props.match.path}/:topicId`} component={Topic} />
+      <Route
+        exact
+        path={props.match.path}
+        render={() => {
+          return <h3>Please select a topic</h3>;
+        }}
+      />
     </div>
   );
 }
